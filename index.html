@@ -8,6 +8,11 @@
 <h1>
 Peperium
 </h1>
+
+<div id="pepeMemes" class="uk-child-width-1-3 uk-width-5-6 uk-text-center uk-margin-large-left uk-margin-large-right" uk-grid>
+
+  </div>
+
 </div>
 
 <div class="uk-section">
@@ -26,6 +31,7 @@ Archetype
 <script>
 var State = {
    memes:{value:new Array(),watchers:[]},
+   pepe_memes: {value: new Array(), watchers:[]},
    orders:{value:[],watchers:[]},
    completed_trades:{value:[],watchers:[]}
 };
@@ -54,11 +60,13 @@ $().ready(function() {
       new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/87c7cd2d74994258b70871d1c72a48dd")
     );
 
+    makePeperium();
     makeArx();
     loadListings();
+    loadPepes();
 });
  var arxAddress = '0x65B14D471F85FB3DfDD77865b0323E59E7C18385';
- var pprAddress = '';
+ var pprAddress = '0xB4e34890034a13325363b3226DCE8EeEc292D626';
 
  var memeABI = [
   {
@@ -593,6 +601,90 @@ var tokenABI = [
 	}
 ]
 
+var rareABI = [
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "Rares",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "view"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_initialAmount",
+				"type": "uint256"
+			},
+			{
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"name": "_symbol",
+				"type": "string"
+			},
+			{
+				"name": "_desc",
+				"type": "string"
+			},
+			{
+				"name": "_ipfshash",
+				"type": "string"
+			}
+		],
+		"name": "createRare",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "nonpayable"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "RareCount",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"type": "function",
+		"stateMutability": "view"
+	},
+	{
+		"inputs": [],
+		"payable": false,
+		"type": "constructor",
+		"stateMutability": "nonpayable"
+	},
+	{
+		"payable": false,
+		"type": "fallback",
+		"stateMutability": "nonpayable"
+	}
+]
+
+
+
 function loadListings() {
 
 
@@ -610,12 +702,30 @@ function loadListings() {
 
 }
 
+function loadPepes() {
+
+
+  pprInstance.methods.RareCount().call().then(function (count) {
+    var loop = count - 1;
+
+    while(loop >= 0) {
+      pprInstance.methods.Rares(loop).call().then(function (address) {
+        UpdateState('pepe_memes',address);
+      })
+      loop--;
+    }
+
+  })
+
+}
+
 function loadToken(addr) {
   return new web3.eth.Contract(tokenABI,addr)
+
 }
 
  function makePeperium() {
-
+   window.pprInstance = new web3.eth.Contract(rareABI,pprAddress);
 
  }
 
@@ -637,9 +747,22 @@ function loadToken(addr) {
       $("#arxMemes").append('<div class=""><div class="uk-card uk-card-small uk-card-primary bluebg"><div class="uk-card-body"><img src="'+ imgURL +'"></img></div><div class="uk-card-footer">'+ name +'</div></div> </div>')
     })
   })
+});
 
+  On('pepe_memes', function (v){
+   console.log('Meme loaded: ' + v);
+   var t = loadToken(v)
+   t.methods.name().call().then( function (result) {
+     var name = result;
 
+     t.methods.ipfs_hash().call().then (function (result) {
+       var ipfsHash = result;
 
+       var imgURL = 'https://cloudflare-ipfs.com/ipfs/' + ipfsHash
+
+       $("#pepeMemes").append('<div class=""><div class="uk-card uk-card-small uk-card-primary bluebg"><div class="uk-card-body"><img src="'+ imgURL +'"></img></div><div class="uk-card-footer">'+ name +'</div></div> </div>')
+     })
+   })
 
 } );
 
