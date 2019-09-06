@@ -3,6 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.4/js/uikit-icons.min.js"></script>
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/604284/web3.js"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.4/css/uikit.min.css" />
 <div class="uk-section">
 <h1>
 Peperium
@@ -13,7 +14,7 @@ Peperium
 <h1>
 Archetype
 
-<div id="arxMemes" class=" uk-child-width-1-3 uk-width-5-6 uk-text-center uk-margin-large-left uk-margin-large-right" uk-grid>
+<div id="arxMemes" class="uk-child-width-1-3 uk-width-5-6 uk-text-center uk-margin-large-left uk-margin-large-right" uk-grid>
 
   </div>
 </h1>
@@ -50,7 +51,7 @@ function On(key,watcher) {
 
 $().ready(function() {
   window.web3 = new Web3(
-      new Web3.providers.WebsocketProvider("wss://mainnet.infura.io/v3/87c7cd2d74994258b70871d1c72a48dd")
+      new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/87c7cd2d74994258b70871d1c72a48dd")
     );
 
     makeArx();
@@ -199,6 +200,399 @@ $().ready(function() {
   }
 ];
 
+var tokenABI = [
+{
+		"constant": true,
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "decimals",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "standard",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "mediaType",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "description",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "target",
+				"type": "address"
+			},
+			{
+				"name": "mintedAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "mintToken",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "ipfs_hash",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "desc",
+				"type": "string"
+			}
+		],
+		"name": "setDescription",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"name": "",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "isLocked",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"name": "_value",
+				"type": "uint256"
+			},
+			{
+				"name": "_extraData",
+				"type": "bytes"
+			}
+		],
+		"name": "approveAndCall",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "address"
+			},
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "allowance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "lock",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "initialSupply",
+				"type": "uint256"
+			},
+			{
+				"name": "tokenName",
+				"type": "string"
+			},
+			{
+				"name": "tokenSymbol",
+				"type": "string"
+			},
+			{
+				"name": "tokenDescription",
+				"type": "string"
+			},
+			{
+				"name": "mType",
+				"type": "uint256"
+			},
+			{
+				"name": "ipfsHash",
+				"type": "string"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "fallback"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
+		"type": "event"
+	}
+]
+
 function loadListings() {
 
 
@@ -206,7 +600,7 @@ function loadListings() {
     var loop = count - 1;
 
     while(loop >= 0) {
-      factory.methods.projects(loop).call().then(function (address) {
+      arxInstance.methods.Memes(loop).call().then(function (address) {
         UpdateState('memes',address);
       })
       loop--;
@@ -216,6 +610,9 @@ function loadListings() {
 
 }
 
+function loadToken(addr) {
+  return new web3.eth.Contract(tokenABI,addr)
+}
 
  function makePeperium() {
 
@@ -228,7 +625,21 @@ function loadListings() {
 
  On('memes', function (v){
   console.log('Meme loaded: ' + v);
-   $("#arxMemes").append('<div class=""><div class="uk-card uk-card-small uk-card-primary bluebg"><div class="uk-card-body"><img src="'+ '' +'"></img></div><div class="uk-card-footer">'+ v +'</div></div> </div>'
+  var t = loadToken(v)
+  t.methods.name().call().then( function (result) {
+    var name = result;
+
+    t.methods.ipfs_hash().call().then (function (result) {
+      var ipfsHash = result;
+
+      var imgURL = 'https://cloudflare-ipfs.com/ipfs/' + ipfsHash
+
+      $("#arxMemes").append('<div class=""><div class="uk-card uk-card-small uk-card-primary bluebg"><div class="uk-card-body"><img src="'+ imgURL +'"></img></div><div class="uk-card-footer">'+ name +'</div></div> </div>')
+    })
+  })
+
+
+
 
 } );
 
