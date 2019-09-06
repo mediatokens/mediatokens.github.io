@@ -3,13 +3,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.1.4/js/uikit-icons.min.js"></script>
 <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/604284/web3.js"></script>
 
-<div class="uk-section>
+<div class="uk-section">
 <h1>
 Peperium
 </h1>
 </div>
 
-<div class="uk-section>
+<div class="uk-section">
 <h1>
 Archetype
 
